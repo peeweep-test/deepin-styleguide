@@ -10,13 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Pull Docker Image
-      run: docker pull myml/texlive-render:latest
+    - name: Install depends
+      run: sudo apt install wget plantuml inkscape python3-pygments make texlive-latex-base texlive-lang-chinese texlive-luatex texlive-latex-recommended texlive-latex-extra
+    - name: Install patch
+      run: |
+        wget https://groveer.github.io/blog/resources/latex_patch_deepin
+        sudo patch --verbose /usr/share/texlive/texmf-dist/tex/lualatex/plantuml/plantuml.lua < latex_patch_deepin
     - name: Build PDF
       run: |
         # run twice to generate table of contents
-        docker run -v `pwd`:/worker -u root --workdir /worker --entrypoint=lualatex myml/texlive-render --output-format pdf --shell-escape ./deepin-styleguide.tex
-        docker run -v `pwd`:/worker -u root --workdir /worker --entrypoint=lualatex myml/texlive-render --output-format pdf --shell-escape ./deepin-styleguide.tex
+        PLANTUML_JAR=/usr/share/plantuml/plantuml.jar lualatex "-shell-escape" -synctex=1 -interaction=nonstopmode -file-line-error ./deepin-styleguide.tex
+        PLANTUML_JAR=/usr/share/plantuml/plantuml.jar lualatex "-shell-escape" -synctex=1 -interaction=nonstopmode -file-line-error ./deepin-styleguide.tex
     - name: Upload PDF to release artifacts
       uses: softprops/action-gh-release@v1
       with:
