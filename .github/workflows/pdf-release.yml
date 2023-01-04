@@ -19,8 +19,8 @@ jobs:
     - name: Build PDF
       run: |
         # run twice to generate table of contents
-        PLANTUML_JAR=/usr/share/plantuml/plantuml.jar lualatex "-shell-escape" -synctex=1 -interaction=nonstopmode -file-line-error ./deepin-styleguide.tex
-        PLANTUML_JAR=/usr/share/plantuml/plantuml.jar lualatex "-shell-escape" -synctex=1 -interaction=nonstopmode -file-line-error ./deepin-styleguide.tex
+        PLANTUML_JAR=/usr/share/plantuml/plantuml.jar lualatex "-shell-escape" -synctex=1 -interaction=nonstopmode -file-line-error ./deepin-styleguide.tex || true
+        PLANTUML_JAR=/usr/share/plantuml/plantuml.jar lualatex "-shell-escape" -synctex=1 -interaction=nonstopmode -file-line-error ./deepin-styleguide.tex || true
     - name: Upload PDF to release artifacts
       uses: softprops/action-gh-release@v1
       with:
